@@ -4,17 +4,14 @@ namespace BCRM_App.Constants
 {
     public static partial class CCConstant
     {
-        public class Area
+        public class Common
         {
-            public class Common
-            {
-                public const string EmailRegex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
-                public const string MobileNoRegex = "^[0-9]{10}$";
-                public const string IdCardRegex = "^[0-9]{13}$";
-                public const string CarRegistrationRegex_Front = "^[ก-ฮ0-9]{1,3}$";
-                public const string CarRegistrationRegex_Back = "^[0-9]{1,4}$";
-                public const string DateOfBirthFormat = "dd/MM/yyyy";
-            }
+            public const string EmailRegex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+            public const string MobileNoRegex = "^[0-9]{10}$";
+            public const string IdCardRegex = "^[0-9]{13}$";
+            public const string CarRegistrationRegex_Front = "^[ก-ฮ0-9]{1,3}$";
+            public const string CarRegistrationRegex_Back = "^[0-9]{1,4}$";
+            public const string DateOfBirthFormat = "dd/MM/yyyy";
         }
 
         public class Database
@@ -22,6 +19,24 @@ namespace BCRM_App.Constants
             public class ConnectionString
             {
                 public static string Core = "";
+            }
+        }
+
+        public class IAM
+        {
+            public const string Provider_Ref = "PVvrhoRoFWJcSU";
+            public const string Callback_Url = "https://dev-bcrm-thanachart-api.azurewebsites.net/api/v1/authentication/Callback";
+        }
+
+        public class Line
+        {
+            public class Status
+            {
+                public const int Line_Request = 1;
+                public const int Line_Callback = 2;
+                public const int Logined = 10;
+                public const int Logout = 40;
+                public const int Failed = 41;
             }
         }
 

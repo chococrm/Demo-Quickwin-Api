@@ -2,6 +2,7 @@ using BCRM.Common.Constants;
 using BCRM.Common.Extensions;
 using BCRM.Common.Helpers;
 using BCRM.Common.Services;
+using BCRM.Common.Services.RemoteInternal.IAM;
 using BCRM.Logging;
 using BCRM.Logging.Extension;
 using BCRM_App.Areas.Api;
@@ -79,6 +80,9 @@ namespace BCRM_App
 
             // BCRM - Storage
             services.AddBCRM_Storage(Configuration);
+
+            // BCRM - IAM
+            services.Add_IAM_Client_Service();
 
             // Sql Connection
             Task<string> demoquickwinConStr = Task.Run(() => BCRM.Common.Configs.BCRM_Config.Credentials.Database.BCRM.ConnectionString(BCRM.Common.Configs.BCRM_Config.Platform.Brand_Ref));

@@ -21,7 +21,7 @@ namespace BCRM_App.Helpers
 
 				string newDateTime = $"{array[0]}/{array[1]}/{year}";
 
-				DateTime resp = DateTime.ParseExact(newDateTime, CCConstant.Area.Common.DateOfBirthFormat, CultureInfo.InvariantCulture);
+				DateTime resp = DateTime.ParseExact(newDateTime, CCConstant.Common.DateOfBirthFormat, CultureInfo.InvariantCulture);
 
 				return resp;
 			}
