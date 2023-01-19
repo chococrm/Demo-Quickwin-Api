@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>BCRM_App</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <UserSecretsId>4d11b7a5-1fbc-4ced-a8ea-3580484300dc</UserSecretsId>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Api\Data\**" />
+    <Compile Remove="Areas\Api\Views\**" />
+    <Content Remove="Areas\Api\Data\**" />
+    <Content Remove="Areas\Api\Views\**" />
+    <EmbeddedResource Remove="Areas\Api\Data\**" />
+    <EmbeddedResource Remove="Areas\Api\Views\**" />
+    <None Remove="Areas\Api\Data\**" />
+    <None Remove="Areas\Api\Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DaaS.Authenticate" Version="0.0.0.1" />
+    <PackageReference Include="EPPlus" Version="5.8.7" />
+    <PackageReference Include="jose-jwt" Version="3.2.0" />
+    <PackageReference Include="JWT" Version="5.3.1" />
+    <PackageReference Include="Line.Messaging" Version="1.4.5" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0-preview1.19506.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0-preview1.19506.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0-preview1-19509-03" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BCRM-Common\BCRM-Common\BCRM-Common.csproj" />
+    <ProjectReference Include="..\..\BCRM-Logging\BCRM-Logging\BCRM-Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Shared\" />
+  </ItemGroup>
+
+</Project>

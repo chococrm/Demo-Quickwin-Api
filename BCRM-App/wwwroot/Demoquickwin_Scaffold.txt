@@ -1,0 +1,1 @@
+Scaffold-DbContext -Context BCRM_81_Entities "Data Source=dev-chocobcrm.database.windows.net;Initial Catalog=BCRM_81_BL7R8X768NUF;Persist Security Info=True;User ID=bcrm_BL7R8X768NUF;password=DebYCEhWmcjCxeMtgQ7y;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/DBModel/Demoquickwin -UseDatabaseNames -Tables DemoQuickwin_Login_Info -F

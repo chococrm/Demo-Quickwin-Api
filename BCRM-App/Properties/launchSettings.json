@@ -1,0 +1,30 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:5122",
+      "sslPort": 44306
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "BCRM_RunAs_Local": "true"
+      }
+    },
+    "BCRM_App": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AZURE_TENANT_ID": "47a9f12a-dfaa-484e-a00b-bc9f7b5f51bb",
+        "BCRM_RunAs_Local": "true"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    }
+  }
+}
