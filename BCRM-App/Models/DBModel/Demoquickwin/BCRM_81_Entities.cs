@@ -14,6 +14,7 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
         }
 
         public virtual DbSet<DemoQuickwin_Login_Info> DemoQuickwin_Login_Infos { get; set; }
+        public virtual DbSet<DemoQuickwin_Customer_Info> DemoQuickwin_Customer_Infos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,41 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
                 entity.Property(e => e.Line_OAuth_State).HasMaxLength(250);
 
                 entity.Property(e => e.Payload).HasMaxLength(1000);
+            });
+
+            _ = modelBuilder.Entity<DemoQuickwin_Customer_Info>(entity =>
+            {
+                entity.HasKey(e => e.CustomerId);
+
+                entity.ToTable("DemoQuickwin_Customer_Info");
+
+                entity.Property(e => e.CustomerId).ValueGeneratedNever();
+
+                entity.Property(e => e.Identity_SRef).HasMaxLength(50);
+
+                entity.Property(e => e.FirstName).HasMaxLength(250);
+
+                entity.Property(e => e.LastName).HasMaxLength(250);
+
+                entity.Property(e => e.IdCard)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.MobileNo)
+                    .IsRequired()
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.Address).HasMaxLength(250);
+
+                entity.Property(e => e.PostalCode).HasMaxLength(10);
+
+                entity.Property(e => e.Province).HasMaxLength(50);
+
+                entity.Property(e => e.District).HasMaxLength(50);
+
+                entity.Property(e => e.SubDistrict).HasMaxLength(50);
+
+                
             });
 
             OnModelCreatingPartial(modelBuilder);

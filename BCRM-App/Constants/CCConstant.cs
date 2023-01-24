@@ -4,6 +4,14 @@ namespace BCRM_App.Constants
 {
     public static partial class CCConstant
     {
+        public static class App
+        {
+            public const int Brand_Id = 14;
+            public const string Brand_Ref = "BLU95KI5B1HY";
+            public const string App_Id = "ASN9VDZS2D3D";
+            public const string App_Secret = "0D5FDF3DBF3B0A72B0459CD76ACFB4C24EF32427D6CD6CB576E2A2FC4DF1594078C2D79F7B25133C94AA144CA9470F7D50841A7E66B61CAA7EBD3522CDBDFB0B";
+            public const string Provider_Ref_Login_Ext_Cred = "PVSXtcDblgF5AS";
+        }
         public class Common
         {
             public const string EmailRegex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
@@ -12,6 +20,44 @@ namespace BCRM_App.Constants
             public const string CarRegistrationRegex_Front = "^[ก-ฮ0-9]{1,3}$";
             public const string CarRegistrationRegex_Back = "^[0-9]{1,4}$";
             public const string DateOfBirthFormat = "dd/MM/yyyy";
+        }
+        public static class Customer
+        {
+            public static class Gender
+            {
+                public const string Male = "M";
+                public const string Female = "F";
+                public const string Unknown = "N";
+
+                public static class Desc
+                {
+                    public const string Male = "Male";
+                    public const string Female = "Female";
+                    public const string Unknown = "Unknown";
+                }
+
+                public static string Get_Desc(string Gender)
+                {
+                    switch (Gender)
+                    {
+                        case Male:
+                            return Desc.Male;
+                        case Female:
+                            return Desc.Female;
+                        case Unknown:
+                            return Desc.Unknown;
+                        default:
+                            return Desc.Unknown;
+                    }
+                }
+            }
+            public static class Status
+            {
+                public const int NonRegistered = 0;
+                public const int Registered = 1;
+                public const int KYC_OTP = 2;
+                public const int KYC_IdCard = 3;
+            }
         }
 
         public class Database
@@ -25,11 +71,16 @@ namespace BCRM_App.Constants
         public class IAM
         {
             public const string Provider_Ref = "PVvrhoRoFWJcSU";
-            public const string Callback_Url = "https://dev-bcrm-thanachart-api.azurewebsites.net/api/v1/authentication/Callback";
+            public const string Callback_Url =
+                /*"https://localhost:44306/api/v1/authentication/Callback"*/
+                "https://dev-bcrm-thanachart-api.azurewebsites.net/api/v1/authentication/Callback"
+                ;
         }
 
         public class Line
         {
+            public const string FrontEndUrl = "https://dev-bcrm-thanachart.azurewebsites.net";
+
             public class Status
             {
                 public const int Line_Request = 1;
