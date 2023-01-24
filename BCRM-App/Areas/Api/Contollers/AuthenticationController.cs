@@ -1,5 +1,6 @@
 ﻿using BCRM.Common.Api;
 using BCRM.Common.Api.Response;
+using BCRM.Common.Configs;
 using BCRM.Common.Constants;
 using BCRM.Common.Factory;
 using BCRM.Common.Factory.Entities.Brand;

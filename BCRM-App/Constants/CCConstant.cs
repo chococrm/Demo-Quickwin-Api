@@ -25,7 +25,7 @@ namespace BCRM_App.Constants
         public class IAM
         {
             public const string Provider_Ref = "PVvrhoRoFWJcSU";
-            public const string Callback_Url = "https://dev-bcrm-thanachart-api.azurewebsites.net/api/v1/authentication/Callback";
+            public const string Callback_Url = "https://dev-bcrm-demo-api.azurewebsites.net/api/v1/authentication/Callback";
         }
 
         public class Line
