@@ -34,5 +34,24 @@ namespace BCRM_App.Areas.Api.Controllers
             _client_Builder = client_Builder;
             _iamService = iamService;
         }
+
+        // GET/POST: api/v1/authentication/Callback
+        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Get | BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
+        [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Req_All_Args: true, Log_Resp: false)]
+        public IActionResult Callback()
+        {
+            try
+            {
+                Data = "Hello World !!!";
+
+                Status = BCRM_Core_Const.Api.Result_Status.Success;
+            }
+            catch (Exception ex)
+            {
+                ApiException = ex;
+            }
+
+            return Build_JsonResp();
+        }
     }
 }
