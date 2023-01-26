@@ -55,8 +55,7 @@ namespace BCRM_App.Constants
             {
                 public const int NonRegistered = 0;
                 public const int Registered = 1;
-                public const int KYC_OTP = 2;
-                public const int KYC_IdCard = 3;
+                public const int KYC_IdCard = 2;
             }
         }
 
@@ -71,15 +70,19 @@ namespace BCRM_App.Constants
         public class IAM
         {
             public const string Provider_Ref = "PVvrhoRoFWJcSU";
-            public const string Callback_Url =
-                /*"https://localhost:44306/api/v1/authentication/Callback"*/
-                "https://dev-bcrm-thanachart-api.azurewebsites.net/api/v1/authentication/Callback"
-                ;
+            public const string Callback_Url = "https://dev-bcrm-demo-api.azurewebsites.net/api/v1/authentication/Callback";
         }
 
         public class Line
         {
             public const string FrontEndUrl = "https://dev-bcrm-thanachart.azurewebsites.net";
+
+            public class Redirect
+            {
+                public const string NotFound = "/not-found";
+                public const string Success = "/success";
+                public const string Register = "/register";
+            }
 
             public class Status
             {
@@ -88,6 +91,11 @@ namespace BCRM_App.Constants
                 public const int Logined = 10;
                 public const int Logout = 40;
                 public const int Failed = 41;
+            }
+            public static class RegisterStatus
+            {
+                public const int NonRegister = 1;
+                public const int Registered = 2;
             }
         }
 
