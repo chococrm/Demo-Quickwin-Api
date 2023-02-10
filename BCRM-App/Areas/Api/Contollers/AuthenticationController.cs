@@ -32,18 +32,22 @@ namespace BCRM_App.Areas.Api.Controllers
         private readonly IBCRM_Client_Builder _client_Builder;
         private readonly IIAM_Client_Service _iamService;
 
-        public AuthenticationController(ILogger<AuthenticationController> logger, IBCRM_Exception_Factory bcrm_Ex_Factory, IHttpContextAccessor httpContext_Accessor, 
-            IBCRM_Client_Builder client_Builder, IIAM_Client_Service iamService
+        public AuthenticationController(
+            ILogger<AuthenticationController> logger,
+            IBCRM_Exception_Factory bcrm_Ex_Factory,
+            IHttpContextAccessor httpContext_Accessor,
+            IBCRM_Client_Builder client_Builder,
+            IIAM_Client_Service iamService
             ) : base(logger, bcrm_Ex_Factory, httpContext_Accessor)
         {
             _client_Builder = client_Builder;
             _iamService = iamService;
         }
 
-        // GET: api/v1/authentication/CreateState_Ref
+        // GET: api/v1/authentication/CreateState
         [AllowAnonymous]
         [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Get)]
-        public IActionResult CreateState_Ref()
+        public IActionResult CreateState()
         {
             DateTime txTimeStamp = DateTime.Now;
 
@@ -82,7 +86,7 @@ namespace BCRM_App.Areas.Api.Controllers
                             {
                                 // Login Info
 
-                                DemoQuickwin_Login_Info lineInfo = new DemoQuickwin_Login_Info
+                                DemoQuickwin_Login_Info loginInfo = new DemoQuickwin_Login_Info
                                 {
                                     Status = CCConstant.Line.Status.Line_Request,
                                     IAM_OAuth_TX_Ref = (string)data["txreference"],
@@ -91,7 +95,7 @@ namespace BCRM_App.Areas.Api.Controllers
                                     Updated_DT = txTimeStamp,
                                 };
 
-                                bcrmContext.DemoQuickwin_Login_Infos.Add(lineInfo);
+                                bcrmContext.DemoQuickwin_Login_Infos.Add(loginInfo);
                                 bcrmContext.SaveChanges();
                             }
 
@@ -125,26 +129,6 @@ namespace BCRM_App.Areas.Api.Controllers
             return Build_JsonResp();
         }
 
-        /*// GET/POST: api/v1/authentication/Callback
-        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Get | BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
-        [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Req_All_Args: true, Log_Resp: false)]
-        public IActionResult Callback()
-        {
-            try
-            {
-                Data = "Hello World !!!";
-
-                Status = BCRM_Core_Const.Api.Result_Status.Success;
-            }
-            catch (Exception ex)
-            {
-                ApiException = ex;
-            }
-
-            return Build_JsonResp();
-        }*/
-
-        // GET/POST: api/v1/authentication/Callback
         [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Get | BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
         [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Req_All_Args: true, Log_Resp: false)]
         public async Task<IActionResult> Callback([FromQuery] Req_Authentication_Callback req)
@@ -200,147 +184,73 @@ namespace BCRM_App.Areas.Api.Controllers
 
                     #endregion
 
-                    #region Update Line info
+                    #region Add/Update Line info
 
                     DemoQuickwin_Line_Info lineInfo = bcrmContext.DemoQuickwin_Line_Infos.FirstOrDefault(o => o.Identity_SRef == req.Identity_SRef);
                     if (lineInfo == null)
                     {
-                        DemoQuickwin_Line_Info newLineInfo = new DemoQuickwin_Line_Info
+                        lineInfo = new DemoQuickwin_Line_Info
                         {
-                            Identity_SRef= req.Identity_SRef,
-                            Status= CCConstant.Line.RegisterStatus.Registered,
-                            LineId= lineId,
-                            LineName= lineName,
+                            Identity_SRef = req.Identity_SRef,
+                            Status = CCConstant.Line.RegisterStatus.NonRegister,
+                            LineId = lineId,
+                            LineName = lineName,
                             LinePictureUrl = linePictureUrl,
                             Created_DT = txTimeStamp,
-                            Updated_DT= txTimeStamp
+                            Updated_DT = txTimeStamp
                         };
-                        bcrmContext.DemoQuickwin_Line_Infos.Add(newLineInfo);
+                        bcrmContext.DemoQuickwin_Line_Infos.Add(lineInfo);
                         bcrmContext.SaveChanges();
                     }
-                    else
+                    else if (lineInfo != null)
                     {
-                        lineInfo.LineId= lineId;
+                        lineInfo.LineId = lineId;
                         lineInfo.LineName = lineName;
                         lineInfo.LinePictureUrl = linePictureUrl;
                         lineInfo.Updated_DT = txTimeStamp;
+                        bcrmContext.SaveChanges();
                     }
 
                     #endregion
 
-                    #region Add Customer row or change scope
+                    #region Add Customer row 
 
                     DemoQuickwin_Customer_Info customerInfo = bcrmContext.DemoQuickwin_Customer_Infos.FirstOrDefault(o => o.Identity_SRef == req.Identity_SRef);
                     if (customerInfo == null)
                     {
                         // add customer row
-                        DemoQuickwin_Customer_Info newCustomer = new DemoQuickwin_Customer_Info
+                        customerInfo = new DemoQuickwin_Customer_Info
                         {
                             Identity_SRef = req.Identity_SRef,
                             Status = CCConstant.Customer.Status.NonRegistered,
                             Created_DT = txTimeStamp,
                             Updated_DT = txTimeStamp
                         };
-                        bcrmContext.DemoQuickwin_Customer_Infos.Add(newCustomer);
+                        bcrmContext.DemoQuickwin_Customer_Infos.Add(customerInfo);
                         bcrmContext.SaveChanges();
                     }
-                    else
-                    {
-                        scope = CCConstant.Scopes.Desc.BCRM_App;
-                    }
 
                     #endregion
 
-                    #region Old CDP
-
-                    // await SendDataToDaas(bcrmContext, loginInfo, lineInfo, campaignLogin, req.Identity_SRef, lineOAuthState);
-
-                    #endregion
-
-                    #region New CDP
-                    /*
-                                        bool isSendingToCDP = false;
-
-                                        if (loginInfo.CampaignId.Value == CCConstant.Campaign.Id.Seventh)
-                                        {
-                                            if (lineInfo.SeventhCampaignStatus.Value == CCConstant_BCRM_App.Authentication.Line.RegisterStatus.NonRegister)
-                                            {
-                                                isSendingToCDP = true;
-                                            }
-                                        }
-                                        else if (loginInfo.CampaignId.Value == CCConstant.Campaign.Id.Ninth)
-                                        {
-                                            if (lineInfo.NinthCampaignStatus.Value == CCConstant_BCRM_App.Authentication.Line.RegisterStatus.NonRegister)
-                                            {
-                                                isSendingToCDP = true;
-                                            }
-                                        }
-                                        else if (loginInfo.CampaignId.Value > CCConstant.Campaign.Id.Twelveth)
-                                        {
-                                            if (campaign.IsDuplicate == null || campaign.IsDuplicate == false)
-                                            {
-                                                if (campaignLogin.Status == CCConstant_BCRM_App.Authentication.Line.RegisterStatus.NonRegister)
-                                                {
-                                                    isSendingToCDP = true;
-                                                }
-                                            }
-                                            else if (campaign.IsDuplicate == true)
-                                            {
-                                                isSendingToCDP = true;
-                                            }
-                                        }
-
-                                        if (isSendingToCDP == true)
-                                        {
-                                            NewCDP_Customer customer = new NewCDP_Customer
-                                            {
-                                                UserRef = req.Identity_SRef,
-                                                Mobile = loginInfo.MobileNo,
-                                                LinePictureProfile = lineInfo.LinePictureUrl,
-                                                LineId = lineInfo.LineId,
-                                                LineName = lineInfo.LineName,
-                                                RegisterDate = lineInfo.Created_DT,
-                                                PDPA_Consent = true,
-                                                PDPA_Line = true,
-                                                Created_DT = lineInfo.Created_DT,
-                                                Updated_DT = txTimeStamp,
-                                            };
-
-                                            NewCDP_CampaignUserStatus campaignUserStatus = new NewCDP_CampaignUserStatus
-                                            {
-                                                CampaignID = loginInfo.CampaignId.Value,
-                                                UserRef = req.Identity_SRef,
-                                                Campaign_status = CCConstant.ThirdParty.CDP.Status.Login,
-                                                Created_DT = txTimeStamp,
-                                                Updated_DT = txTimeStamp,
-                                                Round = 1
-                                            };
-
-                                            NewCDP_Log_Information logInformation = new NewCDP_Log_Information
-                                            {
-                                                Identity_SRef = req.Identity_SRef,
-                                                CampaignId = loginInfo.CampaignId.Value,
-                                            };
-
-                                            await _newCdpService.SendDataToCDP(bcrmContext, customer, campaignUserStatus, logInformation);
-                                        }
-                    */
-                    #endregion
-
-                    #region check redirect path
+                    #region check scope & redirect path
 
                     string redirect = "";
 
-                    if (scope == CCConstant.Scopes.Desc.BCRM_Register)
+                    if (customerInfo.Status == CCConstant.Customer.Status.Registered)
                     {
-                        redirect = CCConstant.Line.Redirect.Register;
+                        scope = CCConstant.Scopes.Desc.BCRM_App;
+                        redirect = CCConstant.Redirect.Home;
                     }
-                    else if (scope == CCConstant.Scopes.Desc.BCRM_App)
+                    else
                     {
-                        redirect = CCConstant.Line.Redirect.Success;
+                        redirect = CCConstant.Redirect.Privacy;
                     }
 
                     redirectUrl = $"{CCConstant.Line.FrontEndUrl}{redirect}";
+
+                    /*payload["Identity_SRef"] = req.Identity_SRef;*/
+
+                    #endregion
 
                     IAM_Response iamResponse = await _iamService.TokenExchangeAsync(iamToken, CCConstant.App.Brand_Ref, scope, payload);
 
@@ -352,8 +262,6 @@ namespace BCRM_App.Areas.Api.Controllers
                     IAM_Token_Exchange_Resp tokenExchange = (IAM_Token_Exchange_Resp)iamResponse.ResponseSuccess;
 
                     redirectUrl = $"{redirectUrl}?token={tokenExchange.Access_Token}";
-
-                    #endregion
 
                     Status = BCRM_Core_Const.Api.Result_Status.Success;
 
@@ -367,5 +275,6 @@ namespace BCRM_App.Areas.Api.Controllers
 
             return Build_JsonResp();
         }
+
     }
 }

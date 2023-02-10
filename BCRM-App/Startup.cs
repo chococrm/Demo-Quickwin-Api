@@ -145,7 +145,27 @@ namespace BCRM_App
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseCors("CorsPolicy");
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+
+                app.UseCors(configurePolicy =>
+                            configurePolicy.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
+            }
+            else
+            {
+
+                app.UseCors(configurePolicy => configurePolicy
+                    .WithOrigins("https://bcrm-yuzu-group.azurewebsites.net/", "https://bcrm-platform-bo.azurewebsites.net/%22")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            /*app.UseCors("CorsPolicy");*/
 
             app.UseRouting();
 

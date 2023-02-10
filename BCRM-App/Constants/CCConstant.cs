@@ -7,7 +7,7 @@ namespace BCRM_App.Constants
         public static class App
         {
             public const int Brand_Id = 14;
-            public const string Brand_Ref = "BLU95KI5B1HY";
+            public const string Brand_Ref = "BL7R8X768NUF";
             public const string App_Id = "ASN9VDZS2D3D";
             public const string App_Secret = "0D5FDF3DBF3B0A72B0459CD76ACFB4C24EF32427D6CD6CB576E2A2FC4DF1594078C2D79F7B25133C94AA144CA9470F7D50841A7E66B61CAA7EBD3522CDBDFB0B";
             public const string Provider_Ref_Login_Ext_Cred = "PVSXtcDblgF5AS";
@@ -21,6 +21,16 @@ namespace BCRM_App.Constants
             public const string CarRegistrationRegex_Back = "^[0-9]{1,4}$";
             public const string DateOfBirthFormat = "dd/MM/yyyy";
         }
+
+        public static class Campaign
+        {
+            public class Field
+            {
+                public const int NoInfoNeed = 0;
+                public const int LastFourInfoNeed = 1;
+            }
+        }
+
         public static class Customer
         {
             public static class Gender
@@ -66,23 +76,26 @@ namespace BCRM_App.Constants
                 public static string Core = "";
             }
         }
-
+        
         public class IAM
         {
             public const string Provider_Ref = "PVvrhoRoFWJcSU";
             public const string Callback_Url = "https://dev-bcrm-demo-api.azurewebsites.net/api/v1/authentication/Callback";
         }
 
+        public class Redirect
+        {
+            public const string NotFound = "/not-found";
+            public const string Home = "/home";
+            public const string Register = "/register";
+            public const string Profile = "/profile";
+            public const string CheckId = "/check-id";
+            public const string Privacy = "/accept-condition-and-privacy";
+        }
+
         public class Line
         {
-            public const string FrontEndUrl = "https://dev-bcrm-thanachart.azurewebsites.net";
-
-            public class Redirect
-            {
-                public const string NotFound = "/not-found";
-                public const string Success = "/success";
-                public const string Register = "/register";
-            }
+            public const string FrontEndUrl = "https://dev-bcrm-demo.azurewebsites.net";
 
             public class Status
             {
@@ -109,6 +122,7 @@ namespace BCRM_App.Constants
                 public const string LineId = "BCRM_Api_LineId";
                 public const string Linename = "BCRM_Api_LineName";
                 public const string PictureUrl = "BCRM_Api_PictureUrl";
+                public const string LineOAuthState = "BCRM_Api_LineOAuthState";
             }
         }
 

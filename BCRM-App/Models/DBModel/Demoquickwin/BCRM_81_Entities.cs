@@ -17,6 +17,9 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
         {
         }
 
+        public virtual DbSet<DemoQuickwin_Campaign> DemoQuickwin_Campaigns { get; set; }
+        public virtual DbSet<DemoQuickwin_Campaign_Login> DemoQuickwin_Campaign_Logins { get; set; }
+        public virtual DbSet<DemoQuickwin_CarRegistration_Info> DemoQuickwin_CarRegistration_Infos { get; set; }
         public virtual DbSet<DemoQuickwin_Customer_Info> DemoQuickwin_Customer_Infos { get; set; }
         public virtual DbSet<DemoQuickwin_Line_Info> DemoQuickwin_Line_Infos { get; set; }
         public virtual DbSet<DemoQuickwin_Login_Info> DemoQuickwin_Login_Infos { get; set; }
@@ -34,13 +37,52 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
+            modelBuilder.Entity<DemoQuickwin_Campaign>(entity =>
+            {
+                entity.HasKey(e => e.CampaignId);
+
+                entity.ToTable("DemoQuickwin_Campaign");
+
+                entity.Property(e => e.Description).HasMaxLength(50);
+
+                entity.Property(e => e.Path)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<DemoQuickwin_Campaign_Login>(entity =>
+            {
+                entity.HasKey(e => e.LogId);
+
+                entity.ToTable("DemoQuickwin_Campaign_Login");
+
+                entity.Property(e => e.Identity_SRef)
+                    .IsRequired()
+                    .HasMaxLength(250);
+            });
+
+            modelBuilder.Entity<DemoQuickwin_CarRegistration_Info>(entity =>
+            {
+                entity.HasKey(e => e.PlateId);
+
+                entity.ToTable("DemoQuickwin_CarRegistration_Info");
+
+                entity.Property(e => e.CarRegistrationProvince).HasMaxLength(50);
+
+                entity.Property(e => e.CarRegistration_Back).HasMaxLength(10);
+
+                entity.Property(e => e.CarRegistration_Front).HasMaxLength(10);
+
+                entity.Property(e => e.Identity_SRef)
+                    .IsRequired()
+                    .HasMaxLength(250);
+            });
+
             modelBuilder.Entity<DemoQuickwin_Customer_Info>(entity =>
             {
                 entity.HasKey(e => e.CustomerId);
 
                 entity.ToTable("DemoQuickwin_Customer_Info");
-
-                entity.Property(e => e.CustomerId).ValueGeneratedNever();
 
                 entity.Property(e => e.Address).HasMaxLength(250);
 
@@ -55,7 +97,9 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
 
                 entity.Property(e => e.IdCard).HasMaxLength(15);
 
-                entity.Property(e => e.Identity_SRef).HasMaxLength(250);
+                entity.Property(e => e.Identity_SRef)
+                    .IsRequired()
+                    .HasMaxLength(250);
 
                 entity.Property(e => e.LastName).HasMaxLength(50);
 
@@ -73,8 +117,6 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
                 entity.HasKey(e => e.AccountId);
 
                 entity.ToTable("DemoQuickwin_Line_Info");
-
-                entity.Property(e => e.AccountId).ValueGeneratedNever();
 
                 entity.Property(e => e.Identity_SRef).HasMaxLength(250);
 

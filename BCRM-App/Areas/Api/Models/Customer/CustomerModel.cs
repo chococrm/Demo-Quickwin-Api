@@ -4,11 +4,9 @@ namespace BCRM_App.Areas.Api.Models.Customer
 {
     public class Req_Customer_Register
     {
-        public int? Status { get; set; }
         public int? ProvinceId { get; set; }
         public int? DistrictId { get; set; }
         public int? SubDistrictId { get; set; }
-        public string Identity_SRef { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }
@@ -22,17 +20,8 @@ namespace BCRM_App.Areas.Api.Models.Customer
         public string DateOfBirth { get; set; }
     }
 
-    public class Resp_Customer_GetCustomerMobileNo
+    public class Req_Customer_IdCard
     {
-        public string FirstName;
-        public string LastName;
-        public string MobileNo;
-    }
-
-    public class Resp_Customer_GetCustomerIdCard
-    {
-        public string FirstName;
-        public string LastName;
-        public string IdCard;
+        public string LastFour { get; set;}
     }
 }

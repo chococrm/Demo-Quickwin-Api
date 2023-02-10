@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 
-#nullable disable
-
-namespace BCRM_App.Models.DBModel.Demoquickwin
+namespace BCRM_App.Areas.Api.Models.Campaign
 {
-    public partial class DemoQuickwin_Customer_Info
+    public class Req_Campaign_Register
     {
-        public int CustomerId { get; set; }
-        public string Identity_SRef { get; set; }
-        public int Status { get; set; }
+        public int CampaignId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }
         public string MobileNo { get; set; }
-        public string IdCard { get; set; }
+        public string LastFour { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string Address { get; set; }
         public int? ProvinceId { get; set; }
@@ -24,7 +19,22 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
         public int? SubDistrictId { get; set; }
         public string SubDistrict { get; set; }
         public string PostalCode { get; set; }
+    }
+
+    public class Req_Get_Plate
+    {
+        public int CampaignId;
+    }
+
+       public class Req_Update_Campaign
+    {
+        public int? CampaignId { get; set; }
+        public string Path { get; set; }
+        public string Description { get; set; }
         public DateTime Created_DT { get; set; }
         public DateTime Updated_DT { get; set; }
+        public bool? IsClosed { get; set; }
+        public int? Field { get; set; }
+
     }
 }
