@@ -44,6 +44,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using MJ1.Helpers;
 using static BCRM.Common.Constants.PDPA.BCRM_PDPA_Const.Article;
 using static BCRM_App.Constants.CCConstant;
+using BCRM_App.Areas.Backoffice.Models.Campaign;
 
 namespace BCRM_App.Areas.Api.Controllers
 {
@@ -88,77 +89,65 @@ namespace BCRM_App.Areas.Api.Controllers
             return false;
         }
 
-        // POST :api/v1/Customer/CheckIdCard
-        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
-        [ApiAuthorize(CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_Register)]
-        [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Req_All_Args: true, Log_Resp: false)]
-        public IActionResult CheckIdCard([FromBody] Req_Customer_IdCard req)
-        {
-            DateTime txTimeStamp = DateTime.Now;
+        #region Get infos
+
+        //GET : api/v1/Customer/GetCampaigns
+        [ApiAuthorize(CCConstant.App.Brand_Ref, "")]
+        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Get)]
+        public IActionResult GetCampaigns()
+        {/* Dictionary<string, string> filter, Dictionary<string, string> order,*/
             try
             {
-                string Identity_SRef = _ctrl_Util.GetRouteData<string>(CCConstant.RouteData.Identity_SRef);
-                DemoQuickwin_Customer_Info customerInfo = _bcrmContext.DemoQuickwin_Customer_Infos.FirstOrDefault(o => o.Identity_SRef == Identity_SRef);
-                if (customerInfo == null)
+                var query = (from campaign in _bcrmContext.DemoQuickwin_Campaigns
+                             where (campaign.Status == 1)
+                             select new CampaignModel(campaign)).ToList();
+
+                List<CampaignModel> campaigns = new List<CampaignModel>();
+                campaigns = query.ToList();
+                Data = new
                 {
-                    throw _bcrm_Ex_Factory.Build(1000400, "No customer founded", "ไม่พบลูกค้าในฐานข้อมูล");
-                }
-                try
-                {
-                    if (customerInfo.Status == 0)
-                        throw _bcrm_Ex_Factory.Build(1000400, "No customer infomation founded", "ไม่พบข้อมูลลูกค้าในฐานข้อมูล");
-                    string lastFour = customerInfo.IdCard.Substring(customerInfo.IdCard.Length - 4);
-                    if (lastFour == null)
-                        throw _bcrm_Ex_Factory.Build(1000400, "Error acccured, Information not found", "เกิดข้อผิดพลาดไม่พบข้อมูลเลขบัตรประชาชน");
-                    if (req.LastFour != lastFour)
-                    {
-                        throw _bcrm_Ex_Factory.Build(1000400, "Information not correct", "ข้อมูลเลขบัตรประชาชนไม่ถูกต้อง");
-                    }
-                    else
-                    {
-                        customerInfo.Status = CCConstant.Customer.Status.KYC_IdCard;
-                        customerInfo.Updated_DT = txTimeStamp;
-                        _bcrmContext.SaveChanges();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-
-
-                /*                string redirectUrl = CCConstant.Line.FrontEndUrl;
-                                Dictionary<string, string> payload = new Dictionary<string, string>();
-
-                                #region change token
-
-                                IAM_Response iamResponse = await _iamService.TokenExchangeAsync(_identityContext.IAM_Token, CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_App, payload);
-
-                                if (iamResponse.Success == false)
-                                {
-                                    throw _bcrm_Ex_Factory.Build(1000401, iamResponse.ResponseError.Response.Error.System);
-                                }
-
-                                IAM_Token_Exchange_Resp tokenExchange = (IAM_Token_Exchange_Resp)iamResponse.ResponseSuccess;
-
-                                #endregion
-
-                                redirectUrl = $"{redirectUrl}?token={tokenExchange.Access_Token}";
-                                Status = BCRM_Core_Const.Api.Result_Status.Success;
-                                return Redirect(CCConstant.Line.FrontEndUrl);
-                */
+                    Datas = campaigns,
+                };
+                Status = BCRM_Core_Const.Api.Result_Status.Success;
             }
             catch (Exception ex)
             {
                 ApiException = ex;
             }
-            Status = BCRM_Core_Const.Api.Result_Status.Success;
+            return Build_JsonResp();
+        }
+
+        //GET : api/v1/Customer/GetCampaignDetails
+        [ApiAuthorize(CCConstant.App.Brand_Ref, "")]
+        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
+        public IActionResult GetCampaignDetails([FromBody] Req_Campaign_Detail req)
+        {/* Dictionary<string, string> filter, Dictionary<string, string> order,*/
+            try
+            {
+                /*DemoQuickwin_Campaign campaign = _bcrmContext.DemoQuickwin_Campaigns.FirstOrDefault(o=>o.CampaignId == );*/
+                var query = (from campaign in _bcrmContext.DemoQuickwin_Campaigns
+                             where (campaign.Status == 1)
+                             && (campaign.CampaignId == req.CampaignId)
+                             select new CampaignModel(campaign)).ToList();
+
+                List<CampaignModel> campaigns = new List<CampaignModel>();
+                campaigns = query.ToList();
+                Data = new
+                {
+                    Datas = campaigns,
+                };
+                Status = BCRM_Core_Const.Api.Result_Status.Success;
+            }
+            catch (Exception ex)
+            {
+                ApiException = ex;
+            }
             return Build_JsonResp();
         }
 
         // POST :api/v1/Customer/GetLinePic
         [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Get)]
-        [ApiAuthorize(CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_Register)]
+        [ApiAuthorize(CCConstant.App.Brand_Ref, ""/*CCConstant.Scopes.Desc.BCRM_Register*/)]
         public IActionResult GetLinePic()
         {
             try
@@ -178,9 +167,13 @@ namespace BCRM_App.Areas.Api.Controllers
             return Build_JsonResp();
         }
 
+        #endregion
+
+        #region Register
+
         //POST :api/v1/Customer/RegisterCampaign
         [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
-        [ApiAuthorize(CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_Register)]
+        [ApiAuthorize(CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_App)]
         [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Resp: true, Req_Keys: new string[] { "req" })]
         public IActionResult RegisterCampaign([FromBody] Req_Campaign_Register req)
         {
@@ -208,7 +201,7 @@ namespace BCRM_App.Areas.Api.Controllers
                             break;
                         // LastFour of IdCard needed
                         case CCConstant.Campaign.Field.LastFourInfoNeed:
-                            if (req.LastFour == null||req.LastFour=="")
+                            if (req.LastFour == null || req.LastFour == "")
                             {
                                 throw _bcrm_Ex_Factory.Build(1000400, "Please complete the information", "กรุณากรอกข้อมูลให้ครบถ้วน");
                             }
@@ -230,8 +223,8 @@ namespace BCRM_App.Areas.Api.Controllers
                     case CCConstant.Campaign.Field.LastFourInfoNeed:
                         try
                         {
-                            string Identity_SRef = _ctrl_Util.GetRouteData<string>(CCConstant.RouteData.Identity_SRef);
-                            DemoQuickwin_Customer_Info customerInfo = _bcrmContext.DemoQuickwin_Customer_Infos.FirstOrDefault(o => o.Identity_SRef == Identity_SRef);
+
+                            DemoQuickwin_Customer_Info customerInfo = _bcrmContext.DemoQuickwin_Customer_Infos.FirstOrDefault(o => o.Identity_SRef == _identityContext.Current.Identity_SRef);
                             if (customerInfo == null)
                             {
                                 throw _bcrm_Ex_Factory.Build(1000400, "No customer founded", "ไม่พบลูกค้าในฐานข้อมูล");
@@ -260,7 +253,17 @@ namespace BCRM_App.Areas.Api.Controllers
 
                 try
                 {
-                    DemoQuickwin_Campaign_Login loginInfo = _bcrmContext.DemoQuickwin_Campaign_Logins.FirstOrDefault(o => o.Identity_SRef == _identityContext.Current.Identity_SRef && o.CampaignId == req.CampaignId);
+/*                    var query = (from loginInfoQuery in _bcrmContext.DemoQuickwin_Campaign_Logins
+                                 where ((loginInfoQuery.Identity_SRef == _identityContext.Current.Identity_SRef)
+                                 &&(loginInfoQuery.CampaignId == req.CampaignId))
+                                 orderby loginInfoQuery.LogId descending
+                                 select new CampaignModel(campaign)).ToList();
+*/
+                    DemoQuickwin_Campaign_Login loginInfo = _bcrmContext.DemoQuickwin_Campaign_Logins
+                        .Where(o => o.Identity_SRef == _identityContext.Current.Identity_SRef && o.CampaignId == req.CampaignId)
+                        .OrderByDescending(o => o.LogId)
+                        .FirstOrDefault();
+
                     if (loginInfo == null)
                     {
                         loginInfo = new DemoQuickwin_Campaign_Login
@@ -279,8 +282,23 @@ namespace BCRM_App.Areas.Api.Controllers
                     {
                         if (loginInfo.Isdelete == false)
                         {
+                            loginInfo.Status = 0;
                             Status = BCRM_Core_Const.Api.Result_Status.Fail;
                             throw _bcrm_Ex_Factory.Build(1000400, "Customer already registered", "ลุกค้าได้ทำการสมัครเรียบร้อยแล้ว");
+                        }
+                        else if (loginInfo.Isdelete == true)
+                        {
+                            DemoQuickwin_Campaign_Login newLoginInfo = new DemoQuickwin_Campaign_Login
+                            {
+                                Identity_SRef = _identityContext.Current.Identity_SRef,
+                                CampaignId = req.CampaignId,
+                                Status = status,
+                                Created_DT = txTimeStamp,
+                                Updated_DT = txTimeStamp,
+                                Isdelete = false
+                            };
+                            _bcrmContext.DemoQuickwin_Campaign_Logins.Add(newLoginInfo);
+                            _bcrmContext.SaveChanges();
                         }
                     }
                 }
@@ -396,9 +414,10 @@ namespace BCRM_App.Areas.Api.Controllers
                 string redirect = CCConstant.Redirect.Home;
                 string redirectUrl = $"{CCConstant.Line.FrontEndUrl}{redirect}";
                 redirectUrl = $"{redirectUrl}?token={tokenExchange.Access_Token}";
-                Data = CustomerInfo;
+
                 Status = BCRM_Core_Const.Api.Result_Status.Success;
-                return Redirect(redirectUrl);
+                Data = tokenExchange.Access_Token;
+                //return Redirect(redirectUrl);
             }
             catch (Exception ex)
             {
@@ -408,5 +427,108 @@ namespace BCRM_App.Areas.Api.Controllers
             return Build_JsonResp();
         }
 
+        #endregion
+
+        #region Checking
+
+        // POST :api/v1/Customer/CheckIdCard
+        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
+        [ApiAuthorize(CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_Register)]
+        [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Req_All_Args: true, Log_Resp: false)]
+        public IActionResult CheckIdCard([FromBody] Req_Customer_IdCard req)
+        {
+            DateTime txTimeStamp = DateTime.Now;
+            try
+            {
+                DemoQuickwin_Customer_Info customerInfo = _bcrmContext.DemoQuickwin_Customer_Infos.FirstOrDefault(o => o.Identity_SRef == _identityContext.Current.Identity_SRef);
+                if (customerInfo == null)
+                {
+                    throw _bcrm_Ex_Factory.Build(1000400, "No customer founded", "ไม่พบลูกค้าในฐานข้อมูล");
+                }
+                try
+                {
+                    if (customerInfo.Status == 0)
+                        throw _bcrm_Ex_Factory.Build(1000400, "No customer infomation founded", "ไม่พบข้อมูลลูกค้าในฐานข้อมูล");
+                    string lastFour = customerInfo.IdCard.Substring(customerInfo.IdCard.Length - 4);
+                    if (lastFour == null)
+                        throw _bcrm_Ex_Factory.Build(1000400, "Error acccured, Information not found", "เกิดข้อผิดพลาดไม่พบข้อมูลเลขบัตรประชาชน");
+                    if (req.LastFour != lastFour)
+                    {
+                        throw _bcrm_Ex_Factory.Build(1000400, "Information not correct", "ข้อมูลเลขบัตรประชาชนไม่ถูกต้อง");
+                    }
+                    else
+                    {
+                        customerInfo.Status = CCConstant.Customer.Status.KYC_IdCard;
+                        customerInfo.Updated_DT = txTimeStamp;
+                        _bcrmContext.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+
+                /*                string redirectUrl = CCConstant.Line.FrontEndUrl;
+                                Dictionary<string, string> payload = new Dictionary<string, string>();
+
+                                #region change token
+
+                                IAM_Response iamResponse = await _iamService.TokenExchangeAsync(_identityContext.IAM_Token, CCConstant.App.Brand_Ref, CCConstant.Scopes.Desc.BCRM_App, payload);
+
+                                if (iamResponse.Success == false)
+                                {
+                                    throw _bcrm_Ex_Factory.Build(1000401, iamResponse.ResponseError.Response.Error.System);
+                                }
+
+                                IAM_Token_Exchange_Resp tokenExchange = (IAM_Token_Exchange_Resp)iamResponse.ResponseSuccess;
+
+                                #endregion
+
+                                redirectUrl = $"{redirectUrl}?token={tokenExchange.Access_Token}";
+                                Status = BCRM_Core_Const.Api.Result_Status.Success;
+                                return Redirect(CCConstant.Line.FrontEndUrl);
+                */
+            }
+            catch (Exception ex)
+            {
+                ApiException = ex;
+            }
+            Status = BCRM_Core_Const.Api.Result_Status.Success;
+            return Build_JsonResp();
+        }
+
+        // POST :api/v1/Customer/CheckCampaignRegistered
+        [BCRM_AcceptVerb(BCRM_Core_Const.Api.Filter.BCRM_HttpMethods.Post)]
+        [ApiAuthorize(CCConstant.App.Brand_Ref, "")]
+        [BCRM_Api_Logging(Log_Header: true, Log_Req: true, Log_Req_All_Args: true, Log_Resp: false)]
+        public IActionResult CheckCampaignRegistered([FromBody] Req_Campaign_Detail req)
+        {
+            DateTime txTimeStamp = DateTime.Now;
+            try
+            {
+                DemoQuickwin_Campaign_Login campaignLogin = _bcrmContext.DemoQuickwin_Campaign_Logins
+                       .Where(o => o.Identity_SRef == _identityContext.Current.Identity_SRef && o.CampaignId == req.CampaignId)
+                       .OrderByDescending(o => o.LogId)
+                       .FirstOrDefault();
+
+                if (campaignLogin == null)
+                {
+                    Data = "Non Registered";
+                }
+                else if (campaignLogin != null)
+                {
+                    Data = "Registered";
+                }
+            }
+            catch (Exception ex)
+            {
+                ApiException = ex;
+            }
+            Status = BCRM_Core_Const.Api.Result_Status.Success;
+            return Build_JsonResp();
+        }
+
+        #endregion
     }
 }

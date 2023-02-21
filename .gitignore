@@ -38,3 +38,4 @@ msbuild.wrn
 
 # sourcetree backup files before merge
 *.orig
+.claudiaideconfig

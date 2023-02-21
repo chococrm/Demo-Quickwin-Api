@@ -235,20 +235,20 @@ namespace BCRM_App.Areas.Api.Controllers
                     #region check scope & redirect path
 
                     string redirect = "";
-
+                    redirect = CCConstant.Redirect.Home;
                     if (customerInfo.Status == CCConstant.Customer.Status.Registered)
                     {
                         scope = CCConstant.Scopes.Desc.BCRM_App;
-                        redirect = CCConstant.Redirect.Home;
+                
                     }
-                    else
+                    /*else
                     {
                         redirect = CCConstant.Redirect.Privacy;
-                    }
+                    }*/
 
                     redirectUrl = $"{CCConstant.Line.FrontEndUrl}{redirect}";
 
-                    /*payload["Identity_SRef"] = req.Identity_SRef;*/
+                    payload["Identity_SRef"] = req.Identity_SRef;
 
                     #endregion
 

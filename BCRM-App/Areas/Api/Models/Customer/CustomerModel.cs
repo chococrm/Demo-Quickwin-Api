@@ -24,4 +24,9 @@ namespace BCRM_App.Areas.Api.Models.Customer
     {
         public string LastFour { get; set;}
     }
+
+    public class Req_Customer_IdentitySRef
+    {
+        public string Identity_SRef { get; set; }
+    }
 }

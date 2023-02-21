@@ -13,6 +13,6 @@ namespace BCRM_App.Models.DBModel.Demoquickwin
         public DateTime Created_DT { get; set; }
         public DateTime Updated_DT { get; set; }
         public int Field { get; set; }
-        public bool IsClosed { get; set; }
+        public int Status { get; set; }
     }
 }
